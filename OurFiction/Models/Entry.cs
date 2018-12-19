@@ -13,11 +13,11 @@ namespace OurFiction.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int EntryId { get; set; }
-        [Required]
-        public string Content { get; set; }
-        public int Votes { get; set; }
-        
-        [ForeignKey("UserId")]
-        public IdentityUser User { get; set; }
+                
+        [ForeignKey("StoryId")]
+        public Story Story { get; set; }
+
+        public bool IsActive { get; set; }
+        // Only one active Entry per Story
     }
 }

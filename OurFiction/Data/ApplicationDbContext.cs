@@ -16,8 +16,8 @@ namespace OurFiction.Data
         }
 
         public DbSet<Entry> Entries { get; set; }
-        public DbSet<EntryCycle> EntryCycles { get; set; }
+        public DbSet<Vote> Votes { get; set; }
         public DbSet<Story> Stories { get; set; }
-        public DbSet<StoryFragment> StoryFragments { get; set; }
+        public DbSet<StoryFragment> Fragments { get; set; }
     }
 }

@@ -7,15 +7,18 @@ using System.Threading.Tasks;
 
 namespace OurFiction.Models
 {
-    public class EntryCycle
+    public class Vote
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int EntryCycleId { get; set; }
-        public DateTimeOffset StartTimeDate { get; set; }
-        public DateTimeOffset EndTimeDate { get; set; }
+        public int VoteId { get; set; }
 
-        [ForeignKey("StoryId")]
-        public Story Story { get; set; }
+        [ForeignKey("FragmentId")]
+        public StoryFragment Fragment { get; set; }
+
+        [ForeignKey("EntryId")]
+        public Entry Entry { get; set; }
+
+        public int VotePoints { get; set; }
     }
 }

@@ -1,0 +1,45 @@
+﻿@model IEnumerable<OurFiction.Models.StoryFragment>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+</p>
+Active Stories:
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Story
+            </th>
+            <th>
+                Entry
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in ViewData["DisplayList"] as List<OurFiction.Controllers.FragmentsController.FragmentViewModel> ) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.StoryTitle)
+            </td>
+            <td>
+                @if(item.IsActive) {
+                    <text>Active: </text>
+                    <a asp-action="Create" asp-route-StoryId="@item.StoryId" asp-route-StoryTitle="@item.StoryTitle" asp-route-EntryId="@item.EntryId">Write Now!</a>
+                }
+                else { <text>No Active Entry</text>}
+            </td>
+            <td>
+                <!--<a asp-action="Edit" asp-route-id="item.FragmentId">Edit</a> |
+    <a asp-action="Details" asp-route-id="item.FragmentId">Details</a> |
+    <a asp-action="Delete" asp-route-id="item.FragmentId">Delete</a>-->
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -12,11 +12,17 @@ namespace OurFiction.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int FragmentId { get; set; }
-        [Required]
+
         public int StorySequenceNumber { get; set; }
+
+        [Required]
+        [StringLength(1000, ErrorMessage = "Keep {0} under {1} characters.")]
+        [Display(Name = "Content")]
+        public string Content { get; set; }
 
         [ForeignKey("StoryId")]
         public Story Story { get; set; }
+        
         [ForeignKey("EntryId")]
         public Entry Entry { get; set; }
     }
