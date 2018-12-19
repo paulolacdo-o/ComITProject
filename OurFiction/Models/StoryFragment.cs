@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,8 +14,6 @@ namespace OurFiction.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int FragmentId { get; set; }
 
-        public int StorySequenceNumber { get; set; }
-
         [Required]
         [StringLength(1000, ErrorMessage = "Keep {0} under {1} characters.")]
         [Display(Name = "Content")]
@@ -25,5 +24,8 @@ namespace OurFiction.Models
         
         [ForeignKey("EntryId")]
         public Entry Entry { get; set; }
+
+        [ForeignKey("OwnerId")]
+        public IdentityUser Owner { get; set; }
     }
 }

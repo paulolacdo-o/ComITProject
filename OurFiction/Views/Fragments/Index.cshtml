@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<OurFiction.Models.StoryFragment>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Fragments";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>@ViewData["Title"]</h1>
 
 <p>
 </p>
@@ -26,6 +26,7 @@ Active Stories:
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.StoryTitle)
+                &nbsp;<a asp-controller="Home" asp-action="Read">Read</a>
             </td>
             <td>
                 @if(item.IsActive) {

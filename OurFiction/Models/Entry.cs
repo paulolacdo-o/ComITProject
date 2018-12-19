@@ -17,6 +17,8 @@ namespace OurFiction.Models
         [ForeignKey("StoryId")]
         public Story Story { get; set; }
 
+        public int SequenceNumber { get; set; }
+
         public bool IsActive { get; set; }
         // Only one active Entry per Story
     }

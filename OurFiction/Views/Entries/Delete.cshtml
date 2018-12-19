@@ -20,7 +20,7 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
+    <form asp-action="Delete" asp-route-StoryId="@ViewData["StoryId"]">
         <input type="hidden" asp-for="EntryId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>

@@ -100,28 +100,30 @@ namespace OurFiction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FragmentId,Content")] StoryFragment storyFragment, int EntryId, int StoryId)
+        public async Task<IActionResult> Create([Bind("FragmentId,Content")] StoryFragment storyFragment, int EntryId)
         {
             
             if (ModelState.IsValid)
             {
                 
                 _context.Add(storyFragment);
-                Story story = new Story();
                 Entry entry = new Entry();
                 entry = await _context.Entries.FindAsync(EntryId);
                 storyFragment.Entry = entry;
-                story = await _context.Stories.FindAsync(StoryId);
-                int sequenceNumber = 0;
-                if (_context.Fragments.Any())
-                {
-                    sequenceNumber = _context.Fragments.Where(f => f.Story.StoryId == StoryId)
-                        .Where(f => f.Entry.EntryId == EntryId).Select(f => f.StorySequenceNumber).DefaultIfEmpty(0).Max();
-                }
-                storyFragment.StorySequenceNumber = sequenceNumber+1;
-                story.FragCount++;
-                storyFragment.Story = story;
+                storyFragment.Story = null;
+                
                 await _context.SaveChangesAsync();
+
+                Vote vote = new Vote()
+                {
+                    Entry = entry,
+                    Fragment = storyFragment
+                };
+
+                _context.Add(vote);
+
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(storyFragment);

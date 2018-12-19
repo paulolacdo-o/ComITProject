@@ -159,24 +159,36 @@ namespace OurFiction.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var story = await _context.Stories.FindAsync(id);
+            var entries = await _context.Entries.Where(e => e.Story.StoryId == id).ToListAsync();
+            if(entries.Any())
+            {
+                foreach(var entry in entries)
+                {
 
-            var fragments = _context.Fragments.Where(f => f.Story.StoryId == id).FirstOrDefault();
-            var entries = _context.Entries.Where(f => f.Story.StoryId == id).First();
-            
-            entries = _context.Entries.Include(e => e.Story).Where(e => e.Story.StoryId == id).First();
-
-            if (fragments != null)
-                _context.Fragments.Remove(fragments);
-            await _context.SaveChangesAsync();
-
-
-            if (entries != null)
-                _context.Entries.Remove(entries);
-            await _context.SaveChangesAsync();
-
+                    var votes = await _context.Votes.Where(v => v.Entry.EntryId == entry.EntryId).ToListAsync();
+                    if(votes.Any())
+                    {
+                        foreach(var vote in votes)
+                        {
+                            _context.Votes.Remove(vote);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    var fragments = await _context.Fragments.Where(v => v.Entry.EntryId == entry.EntryId).ToListAsync();
+                    if (fragments.Any())
+                    {
+                        foreach (var fragment in fragments)
+                        {
+                            _context.Fragments.Remove(fragment);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    _context.Entries.Remove(entry);
+                    await _context.SaveChangesAsync();
+                }
+            }
             _context.Stories.Remove(story);
             await _context.SaveChangesAsync();
-
 
             return RedirectToAction(nameof(Index));
         }

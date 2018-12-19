@@ -154,7 +154,7 @@ namespace OurFiction.Controllers
         }
 
         // GET: Entries/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int StoryId)
         {
             if (id == null)
             {
@@ -167,19 +167,28 @@ namespace OurFiction.Controllers
             {
                 return NotFound();
             }
-
+            ViewData["StoryId"] = StoryId;
             return View(entry);
         }
 
         // POST: Entries/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int StoryId)
         {
+            var fragment = await _context.Fragments.Where(f => f.Entry.EntryId == id).ToListAsync();
+            if(fragment.Any())
+            {
+                foreach (var frag in fragment)
+                {
+                    _context.Fragments.Remove(frag);
+                    await _context.SaveChangesAsync();
+                }
+            }
             var entry = await _context.Entries.FindAsync(id);
             _context.Entries.Remove(entry);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { id = StoryId });
         }
 
         private bool EntryExists(int id)
