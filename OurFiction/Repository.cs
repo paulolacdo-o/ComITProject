@@ -50,5 +50,20 @@ namespace OurFiction
         {
             return _context.Stories.Find(id).FragCount;
         }
+
+        public List<StoryFragment> GetListOfFragmentsWithEntry(int? EntryId)
+        {
+            List<StoryFragment> fragList = new List<StoryFragment>();
+            fragList =  _context.Fragments.Where(f => f.Entry.EntryId == EntryId).ToList();
+            return fragList;
+        }
+
+        public int GetStoryIdWithEntry(int? EntryId)
+        {
+            var entry = _context.Entries.Find(EntryId);
+            if (entry == null)
+                return 0;
+            return entry.Story.StoryId;
+        }
     }
 }

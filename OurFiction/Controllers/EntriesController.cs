@@ -181,6 +181,12 @@ namespace OurFiction.Controllers
             {
                 foreach (var frag in fragment)
                 {
+                    var votes = await _context.Votes.Where(v => v.Fragment.FragmentId == frag.FragmentId).ToListAsync();
+                    foreach(var vote in votes)
+                    {
+                        _context.Votes.Remove(vote);
+                        await _context.SaveChangesAsync();
+                    }
                     _context.Fragments.Remove(frag);
                     await _context.SaveChangesAsync();
                 }

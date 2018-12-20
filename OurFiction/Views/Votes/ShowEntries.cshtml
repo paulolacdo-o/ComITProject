@@ -1,0 +1,40 @@
+﻿@model IEnumerable<OurFiction.Controllers.VotesController.VotesIndexViewModel>
+@{
+    ViewData["Title"] = "Show Entries";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table width="80%">
+    <thead>
+        <tr>
+            <th>
+                @ViewData["StoryTitle"]
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{int i = 1;
+            foreach (var item in Model)
+            {
+    <tr>
+        <td>
+            @i
+            <br />
+            @item.Fragment.Content
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="align-items-md-end">Votes: @item.Vote.VotePoints</span>
+            <a asp-controller="Votes" asp-action="VoteForId" asp-route-fId="@item.Fragment.FragmentId" asp-route-eId="@item.Entry.EntryId">Vote for this</a>
+
+            <hr />
+        </td>
+            </tr>
+    i = i + 1;
+                }
+            }
+    </tbody>
+</table>
