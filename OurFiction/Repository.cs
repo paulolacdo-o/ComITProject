@@ -67,5 +67,23 @@ namespace OurFiction
                 return 0;
             return entry.Story.StoryId;
         }
+
+        public bool UpdateStoryNumberOfFragments(int? StoryId)
+        {
+            bool success = true;
+            if(StoryId == null)
+            {
+                return false;
+            }
+
+            var fragments = _context.Fragments.Where(f => f.Story.StoryId == StoryId).ToList();
+
+            var story = _context.Stories.Find(StoryId);
+            story.FragCount = fragments.Count();
+
+            _context.SaveChanges();
+
+            return success;
+        }
     }
 }

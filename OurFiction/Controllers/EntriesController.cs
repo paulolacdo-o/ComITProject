@@ -42,7 +42,7 @@ namespace OurFiction.Controllers
                 return NotFound();
             }
 
-            var entry = await _context.Entries
+            var entry = await _context.Entries.Include(m => m.Story)
                 .FirstOrDefaultAsync(m => m.EntryId == id);
             if (entry == null)
             {
@@ -90,7 +90,13 @@ namespace OurFiction.Controllers
                 .Where(f => f.Entry.EntryId == entry.EntryId).ToList();
             var votes = _context.Votes.Include(v => v.Fragment)
                 .Include(v => v.Entry).Where(v => v.Entry.EntryId == entry.EntryId).ToList();
-            int mostPoints = votes.Max(v => v.VotePoints);
+            int mostPoints;
+            if (votes.Any())
+            {
+                mostPoints = votes.Max(v => v.VotePoints);
+            }
+            else
+                return RedirectToAction(nameof(Index), new { id = StoryId });
 
             var winningVotes = votes.Where(v => v.VotePoints == mostPoints);
 
@@ -105,6 +111,7 @@ namespace OurFiction.Controllers
 
             var frag = fragments.Where(f => f.FragmentId == winner.FirstOrDefault().FragmentId).FirstOrDefault();
             frag.Story = story;
+            frag.Entry = null;
             story.FragCount++;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index), new { id = StoryId });
@@ -185,7 +192,7 @@ namespace OurFiction.Controllers
                 return NotFound();
             }
 
-            var entry = await _context.Entries
+            var entry = await _context.Entries.Include(m => m.Story)
                 .FirstOrDefaultAsync(m => m.EntryId == id);
             if (entry == null)
             {
@@ -212,6 +219,17 @@ namespace OurFiction.Controllers
                         await _context.SaveChangesAsync();
                     }
                     _context.Fragments.Remove(frag);
+                    await _context.SaveChangesAsync();
+                }
+                bool IsStoryFragCountUpdated = _repository.UpdateStoryNumberOfFragments(StoryId);
+            }
+            var entryVote = await _context.Votes.Include(v => v.Entry)
+                .Where(v => v.Entry.EntryId == id).ToListAsync();
+            if(entryVote.Any())
+            {
+                foreach(var vote in entryVote)
+                {
+                    vote.Entry = null;
                     await _context.SaveChangesAsync();
                 }
             }

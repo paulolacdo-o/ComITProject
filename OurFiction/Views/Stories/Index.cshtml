@@ -17,6 +17,9 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
+                Owner
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.FragCount)
             </th>
             <th colspan="2"></th>
@@ -27,6 +30,9 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @item.Owner.UserName
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FragCount)

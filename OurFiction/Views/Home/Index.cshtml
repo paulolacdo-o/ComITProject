@@ -7,7 +7,7 @@
     <p>The goal of this website is to create a fictional story where the author is not just a single person.</p>
     <p>This will also not be a simple collaboration between authors.</p>
     <p>Anybody can participate, whether you are a professional writer or a complete amateur!</p>
-    <p>If you want to just read, <a>click here</a> to proceed to the public reading section.</p>
+    <p>If you want to just read, <a asp-action="Read" asp-controller="Home">click here</a></p>
     <p>If you want to participate, register an account and login!</p>
 </div>
 <div>
@@ -18,7 +18,7 @@
             foreach (var item in ViewData["ListOfActiveStories"] as List<Story>)
             {
             <li>
-                @item.Title
+                <a asp-action="ReadFiction" asp-controller="Home" asp-route-id="@item.StoryId">@item.Title</a>
                 <ul><li>@item.Synopsis</li></ul>
             </li>
             }

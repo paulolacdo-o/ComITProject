@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<OurFiction.Models.StoryFragment>
 @{
-    ViewData["Title"] = "Fragments";
+    ViewData["Title"] = "Write";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -26,11 +26,13 @@ Active Stories:
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.StoryTitle)
-                &nbsp;<a asp-controller="Home" asp-action="Read">Read</a>
+                &nbsp;<a asp-controller="Home" asp-action="ReadFiction" asp-route-id="@item.StoryId">Read</a>
             </td>
             <td>
                 @if(item.IsActive) {
                     <text>Active: </text>
+                  
+
                     <a asp-action="Create" asp-route-StoryId="@item.StoryId" asp-route-StoryTitle="@item.StoryTitle" asp-route-EntryId="@item.EntryId">Write Now!</a>
                 }
                 else { <text>No Active Entry</text>}

@@ -1,16 +1,20 @@
 ﻿
 @{
-    ViewData["Title"] = "Read";
+    ViewData["Title"] = "Read a Fiction";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Read</h1>
-
+<h1>@ViewData["Title"]</h1>
+<hr>
 <ul>
     @foreach (var item in ViewData["AllStories"] as List<Story>)
     {
         <li>
             <a asp-action="ReadFiction" asp-route-id="@item.StoryId">@item.Title</a>
+            <br />
+            <p><u>Synopsis:</u> @item.Synopsis</p>
         </li>
     }
 </ul>
+<hr />
+<a asp-action="Index">Back to Home</a>

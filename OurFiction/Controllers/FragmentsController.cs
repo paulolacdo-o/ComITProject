@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -40,15 +41,20 @@ namespace OurFiction.Controllers
                 }
                 else
                 {
+                    var fragment = await _context.Fragments.Include(f => f.Entry).Include(f => f.Owner)
+                        .Where(f => f.Entry.EntryId == entry.EntryId)
+                        .Where(f => f.Entry.Story.StoryId == story.StoryId).FirstOrDefaultAsync();
                     displayList.Add(new FragmentViewModel
                     {
                         StoryTitle = story.Title,
                         IsActive = true,
                         EntryId = entry.EntryId,
-                        StoryId = story.StoryId
+                        StoryId = story.StoryId,
+                        OwnerName = fragment.Owner.UserName
                     });
                 }
             }
+            
             ViewData["DisplayList"] = displayList;
 
             return View(await _context.Fragments.ToListAsync());
@@ -61,6 +67,7 @@ namespace OurFiction.Controllers
             public int EntryId { get; set; }
             public int StoryId { get; set; }
             public string Contents { get; set; }
+            public string OwnerName { get; set; }
 
             public static implicit operator List<object>(FragmentViewModel v)
             {
@@ -206,6 +213,12 @@ namespace OurFiction.Controllers
             var storyFragment = await _context.Fragments.FindAsync(id);
             _context.Fragments.Remove(storyFragment);
             await _context.SaveChangesAsync();
+
+            if (storyFragment.Story != null)
+            {
+                int storyId = storyFragment.Story.StoryId;
+                bool IsStoryFragCountUpdated = _repository.UpdateStoryNumberOfFragments(storyId);
+            }
             return RedirectToAction(nameof(Index));
         }
 

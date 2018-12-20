@@ -34,7 +34,7 @@
                 { <text>Completed</text>}
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.EntryId">Edit</a> |
+                    @*<a asp-action="Edit" asp-route-id="@item.EntryId">Edit</a> |*@
                     <a asp-action="Details" asp-route-id="@item.EntryId">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.EntryId" asp-route-StoryId="@ViewData["StoryId"]">Delete</a>
                 </td>

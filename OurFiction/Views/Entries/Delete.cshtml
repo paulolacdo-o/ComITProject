@@ -23,6 +23,6 @@
     <form asp-action="Delete" asp-route-StoryId="@ViewData["StoryId"]">
         <input type="hidden" asp-for="EntryId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index" asp-route-id="@Model.Story.StoryId">Back to List</a>
     </form>
 </div>

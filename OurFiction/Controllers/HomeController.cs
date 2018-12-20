@@ -47,6 +47,10 @@ namespace OurFiction.Controllers
                 Story = story,
                 Fragments = fragments
             };
+            var entry = _context.Entries.Where(e => e.Story.StoryId == id)
+                .Where(e => e.IsActive).FirstOrDefault();
+            ViewData["ActiveEntry"] = entry;
+            ViewData["Title"] = model.Story.Title;
             return View(model);
         }
 

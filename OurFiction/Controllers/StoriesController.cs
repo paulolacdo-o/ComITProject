@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,16 +16,18 @@ namespace OurFiction.Controllers
     public class StoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly Repository _repository;
 
         public StoriesController(ApplicationDbContext context)
         {
             _context = context;
+            _repository = new Repository(_context);
         }
 
         // GET: Stories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Stories.ToListAsync());
+            return View(await _context.Stories.Include(s => s.Owner).ToListAsync());
         }
 
         // GET: Stories/Details/5
@@ -58,6 +61,9 @@ namespace OurFiction.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("StoryId,Title,Synopsis,FragCount,InitialContent,IsActive")] Story story)
         {
+            string idLoggedUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var Owner = _context.Users.Where(u => u.Id == idLoggedUser).FirstOrDefault();
+            story.Owner = Owner;
             if (ModelState.IsValid)
             {
                 _context.Add(story);
@@ -182,8 +188,25 @@ namespace OurFiction.Controllers
                             _context.Fragments.Remove(fragment);
                             await _context.SaveChangesAsync();
                         }
+                        bool IsStoryFragCountUpdated = _repository.UpdateStoryNumberOfFragments(id);
                     }
+                    
                     _context.Entries.Remove(entry);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            var frag = await _context.Fragments.Include(f => f.Story).Where(f => f.Story.StoryId == id).ToListAsync();
+            if (frag.Any())
+            {
+                foreach (var fragment in frag)
+                {
+                    var votes = await _context.Votes.Include(v => v.Fragment).Where(v => v.Fragment.FragmentId == fragment.FragmentId).ToListAsync();
+                    foreach(var vote in votes)
+                    {
+                        _context.Votes.Remove(vote);
+                        await _context.SaveChangesAsync();
+                    }
+                    _context.Fragments.Remove(fragment);
                     await _context.SaveChangesAsync();
                 }
             }
