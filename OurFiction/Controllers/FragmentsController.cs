@@ -28,10 +28,12 @@ namespace OurFiction.Controllers
             Entry entry = new Entry();
             List<Story> stories = new List<Story>();
             List<FragmentViewModel> displayList = new List<FragmentViewModel>();
+            List<StoryFragment> fragments = new List<StoryFragment>();
             ViewData["StoryList"] = stories = _repository.GetActiveStories();
             foreach(Story story in stories)
             {
-                if ((entry = _repository.GetActiveEntryOfStory(story.StoryId)) == null)
+                entry = _repository.GetActiveEntryOfStory(story.StoryId);
+                if (entry == null)
                 {
                     displayList.Add(new FragmentViewModel {
                         StoryTitle = story.Title,
@@ -41,20 +43,20 @@ namespace OurFiction.Controllers
                 }
                 else
                 {
-                    var fragment = await _context.Fragments.Include(f => f.Entry).Include(f => f.Owner)
-                        .Where(f => f.Entry.EntryId == entry.EntryId)
-                        .Where(f => f.Entry.Story.StoryId == story.StoryId).FirstOrDefaultAsync();
+                    fragments.AddRange(_context.Fragments.Include(f => f.Owner)
+                        .Include(f => f.Entry)
+                        .Where(f => f.Entry.EntryId == entry.EntryId).ToList());
                     displayList.Add(new FragmentViewModel
                     {
                         StoryTitle = story.Title,
                         IsActive = true,
                         EntryId = entry.EntryId,
-                        StoryId = story.StoryId,
-                        OwnerName = fragment.Owner.UserName
+                        StoryId = story.StoryId
                     });
                 }
             }
-            
+            string idStringLoggedUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewData["FragList"] = fragments.Where(f => f.Owner.Id == idStringLoggedUser).ToList();
             ViewData["DisplayList"] = displayList;
 
             return View(await _context.Fragments.ToListAsync());
@@ -67,7 +69,7 @@ namespace OurFiction.Controllers
             public int EntryId { get; set; }
             public int StoryId { get; set; }
             public string Contents { get; set; }
-            public string OwnerName { get; set; }
+            public StoryFragment fragment { get; set; }
 
             public static implicit operator List<object>(FragmentViewModel v)
             {
@@ -112,6 +114,9 @@ namespace OurFiction.Controllers
             
             if (ModelState.IsValid)
             {
+                string idLoggedUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var Owner = _context.Users.Where(u => u.Id == idLoggedUser).FirstOrDefault();
+                storyFragment.Owner = Owner;
                 
                 _context.Add(storyFragment);
                 Entry entry = new Entry();
@@ -211,6 +216,13 @@ namespace OurFiction.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var storyFragment = await _context.Fragments.FindAsync(id);
+            var votes = await _context.Votes.Include(v => v.Fragment)
+                .Where(v => v.Fragment.FragmentId == storyFragment.FragmentId).ToListAsync();
+            foreach(var vote in votes)
+            {
+                _context.Votes.Remove(vote);
+                await _context.SaveChangesAsync();
+            }
             _context.Fragments.Remove(storyFragment);
             await _context.SaveChangesAsync();
 
