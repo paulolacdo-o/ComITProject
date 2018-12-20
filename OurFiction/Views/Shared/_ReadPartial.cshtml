@@ -3,10 +3,13 @@
 @inject UserManager<IdentityUser> UserManager
 
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-controller="Fragments" asp-action="Index">Write</a>
-    </li>
-}
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Fragments" asp-action="Index">Write</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Votes" asp-action="Index">Vote</a>
+        </li>
+    }
 </ul>

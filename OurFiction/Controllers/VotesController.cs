@@ -80,6 +80,7 @@ namespace OurFiction.Controllers
             {
                 var vote = _context.Votes.Include(v => v.Entry)
                     .Include(v => v.Fragment)
+                    .Where(v => v.Entry.IsActive)
                     .Where(v => v.Entry.EntryId == frag.Entry.EntryId)
                     .Where(v => v.Fragment.FragmentId == frag.FragmentId).FirstOrDefault();
                 models.Add(new VotesIndexViewModel
