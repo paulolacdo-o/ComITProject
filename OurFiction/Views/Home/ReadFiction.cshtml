@@ -1,0 +1,14 @@
+﻿@model OurFiction.Controllers.HomeController.ReadFictionViewModel
+@{
+    ViewData["Title"] = "ReadFiction";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>ReadFiction</h1>
+
+<h4>@Model.Story.Title</h4>
+
+@foreach(var item in Model.Fragments)
+{
+    <p>@item.Content</p>
+}

@@ -47,19 +47,24 @@ namespace OurFiction.Controllers
 
         public async Task<IActionResult> VoteForId(int fId, int eId)
         {
+            var entry = _context.Entries.Include(e => e.Story)
+                .Where(e => e.EntryId == eId).FirstOrDefault();
+            var storyId = entry.Story.StoryId;
+
+            if(!entry.IsActive)
+                return RedirectToAction(nameof(ShowEntries), new { id = storyId });
+
             var vote = _context.Votes.Include(v => v.Entry)
                 .Include(v => v.Fragment)
                 .Where(v => v.Entry.EntryId == eId)
                 .Where(v => v.Fragment.FragmentId == fId).FirstOrDefault();
             vote.VotePoints += 1;
             await _context.SaveChangesAsync();
-            var entry = _context.Entries.Include(e => e.Story)
-                .Where(e => e.EntryId == eId).FirstOrDefault();
-            var storyId = entry.Story.StoryId;
+            
             return RedirectToAction(nameof(ShowEntries),new { id = storyId });
         }
 
-        public async Task<IActionResult> ShowEntries(int id)
+        public IActionResult ShowEntries(int id)
         {
             ViewData["Counter"] = 1;
             ViewData["StoryId"] = id;

@@ -8,18 +8,16 @@ using System.Threading.Tasks;
 
 namespace OurFiction.Models
 {
-    public class Vote
+    public class VoteTracker
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int VoteId { get; set; }
+        public int id { get; set; }
 
-        [ForeignKey("FragmentId")]
-        public StoryFragment Fragment { get; set; }
+        [ForeignKey("VoterId")]
+        public IdentityUser Voter { get; set; }
 
-        [ForeignKey("EntryId")]
-        public Entry Entry { get; set; }
-
-        public int VotePoints { get; set; }
+        [ForeignKey("VoteId")]
+        public Vote Vote { get; set; }
     }
 }

@@ -42,7 +42,9 @@ namespace OurFiction
             if (id == null)
                 return null;
             Entry entry = new Entry();
-            entry = _context.Entries.Where(e => e.Story.StoryId == id).Where(e => e.IsActive).FirstOrDefault();
+            entry = _context.Entries
+                .Where(e => e.Story.StoryId == id)
+                .Where(e => e.IsActive).FirstOrDefault();
             return entry;
         }
 

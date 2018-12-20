@@ -82,7 +82,31 @@ namespace OurFiction.Controllers
                 return NotFound();
             }
             entry.IsActive = !entry.IsActive;
-            var success = await _context.SaveChangesAsync();
+
+            Story story = new Story();
+            story = _context.Stories.Find(StoryId);
+
+            var fragments = _context.Fragments.Include(f => f.Entry)
+                .Where(f => f.Entry.EntryId == entry.EntryId).ToList();
+            var votes = _context.Votes.Include(v => v.Fragment)
+                .Include(v => v.Entry).Where(v => v.Entry.EntryId == entry.EntryId).ToList();
+            int mostPoints = votes.Max(v => v.VotePoints);
+
+            var winningVotes = votes.Where(v => v.VotePoints == mostPoints);
+
+            List<StoryFragment> winner = new List<StoryFragment>();
+            foreach(var vote in winningVotes)
+            {
+                winner.Add(vote.Fragment);
+            }
+
+            if(winner.Count() != 1)
+                return RedirectToAction(nameof(Index), new { id = StoryId });
+
+            var frag = fragments.Where(f => f.FragmentId == winner.FirstOrDefault().FragmentId).FirstOrDefault();
+            frag.Story = story;
+            story.FragCount++;
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index), new { id = StoryId });
         }
 

@@ -6,3 +6,11 @@
 
 <h1>Read</h1>
 
+<ul>
+    @foreach (var item in ViewData["AllStories"] as List<Story>)
+    {
+        <li>
+            <a asp-action="ReadFiction" asp-route-id="@item.StoryId">@item.Title</a>
+        </li>
+    }
+</ul>

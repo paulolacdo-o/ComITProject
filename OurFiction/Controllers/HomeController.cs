@@ -31,7 +31,29 @@ namespace OurFiction.Controllers
         [AllowAnonymous]
         public IActionResult Read()
         {
+            //List of all Stories
+            var listAllStories = _context.Stories.ToList();
+            ViewData["AllStories"] = listAllStories;
             return View();
+        }
+
+        [AllowAnonymous]
+        public IActionResult ReadFiction(int? id)
+        {
+            var story = _context.Stories.Find(id);
+            var fragments = _context.Fragments.Where(f => f.Story.StoryId == id).ToList();
+            ReadFictionViewModel model = new ReadFictionViewModel()
+            {
+                Story = story,
+                Fragments = fragments
+            };
+            return View(model);
+        }
+
+        public class ReadFictionViewModel
+        {
+            public Story Story { get; set; }
+            public List<StoryFragment> Fragments { get; set; }
         }
 
         [AllowAnonymous]

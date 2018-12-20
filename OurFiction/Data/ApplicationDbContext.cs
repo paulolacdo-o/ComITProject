@@ -19,6 +19,7 @@ namespace OurFiction.Data
         public DbSet<Vote> Votes { get; set; }
         public DbSet<Story> Stories { get; set; }
         public DbSet<StoryFragment> Fragments { get; set; }
+        public DbSet<VoteTracker> Tracker { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
