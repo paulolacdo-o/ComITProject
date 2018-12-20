@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OurFiction.Data;
 
 namespace OurFiction.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181219182549_modifiedModels")]
+    partial class modifiedModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,15 +243,13 @@ namespace OurFiction.Data.Migrations
 
                     b.Property<int?>("EntryId");
 
-                    b.Property<string>("OwnerId");
-
                     b.Property<int?>("StoryId");
+
+                    b.Property<int>("StorySequenceNumber");
 
                     b.HasKey("FragmentId");
 
                     b.HasIndex("EntryId");
-
-                    b.HasIndex("OwnerId");
 
                     b.HasIndex("StoryId");
 
@@ -275,25 +275,6 @@ namespace OurFiction.Data.Migrations
                     b.HasIndex("FragmentId");
 
                     b.ToTable("Votes");
-                });
-
-            modelBuilder.Entity("OurFiction.Models.VoteTracker", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("VoteId");
-
-                    b.Property<string>("VoterId");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("VoteId");
-
-                    b.HasIndex("VoterId");
-
-                    b.ToTable("Tracker");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -361,10 +342,6 @@ namespace OurFiction.Data.Migrations
                         .WithMany()
                         .HasForeignKey("EntryId");
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
-
                     b.HasOne("OurFiction.Models.Story", "Story")
                         .WithMany()
                         .HasForeignKey("StoryId");
@@ -379,17 +356,6 @@ namespace OurFiction.Data.Migrations
                     b.HasOne("OurFiction.Models.StoryFragment", "Fragment")
                         .WithMany()
                         .HasForeignKey("FragmentId");
-                });
-
-            modelBuilder.Entity("OurFiction.Models.VoteTracker", b =>
-                {
-                    b.HasOne("OurFiction.Models.Vote", "Vote")
-                        .WithMany()
-                        .HasForeignKey("VoteId");
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Voter")
-                        .WithMany()
-                        .HasForeignKey("VoterId");
                 });
 #pragma warning restore 612, 618
         }

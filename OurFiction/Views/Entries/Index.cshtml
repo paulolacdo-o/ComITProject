@@ -1,0 +1,56 @@
+﻿@model IEnumerable<OurFiction.Models.Entry>
+
+@{
+    ViewData["Title"] = "Entries";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p></p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EntryId)
+            </th>
+            <th>
+                Status
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EntryId)
+                </td>
+                <td>
+                    @if (item.IsActive)
+                    {<text>Active</text>}
+                else
+                { <text>Completed</text>}
+                </td>
+                <td>
+                    @*<a asp-action="Edit" asp-route-id="@item.EntryId">Edit</a> |*@
+                    <a asp-action="Details" asp-route-id="@item.EntryId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.EntryId" asp-route-StoryId="@ViewData["StoryId"]">Delete</a>
+                </td>
+            </tr>
+        }
+        <tr>
+            <td colspan="3">
+                @if (ViewData["IsAnEntryActive"].Equals(false))
+                {
+                    <a asp-action="Create" asp-route-StoryId="@ViewData["StoryId"]">Create New Entry</a>
+                }
+                else
+                {
+                    <a asp-action="Deactivate" asp-route-StoryId="@ViewData["StoryId"]">End Current Entry</a>
+                }
+            </td>
+        </tr>
+    </tbody>
+</table>

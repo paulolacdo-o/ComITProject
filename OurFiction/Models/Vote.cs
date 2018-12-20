@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace OurFiction.Models
 {
-    public class Entry
+    public class Vote
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int EntryId { get; set; }
-                
-        [ForeignKey("StoryId")]
-        public Story Story { get; set; }
+        public int VoteId { get; set; }
 
-        public int SequenceNumber { get; set; }
+        [ForeignKey("FragmentId")]
+        public StoryFragment Fragment { get; set; }
 
-        public bool IsActive { get; set; }
-        // Only one active Entry per Story
+        [ForeignKey("EntryId")]
+        public Entry Entry { get; set; }
+
+        public int VotePoints { get; set; }
     }
 }

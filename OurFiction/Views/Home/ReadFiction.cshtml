@@ -1,0 +1,35 @@
+﻿@model OurFiction.Controllers.HomeController.ReadFictionViewModel
+@{
+    ViewData["Title"] = Model.Story.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<p>
+    @Model.Story.InitialContent
+</p>
+
+@foreach (var item in Model.Fragments)
+{
+    <p>@item.Content</p>
+}
+<hr />
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@if (SignInManager.IsSignedIn(User))
+{
+    var entry = ViewData["ActiveEntry"] as Entry;
+    @if (entry != null)
+    {
+        <span>There is an active entry for this fiction: </span>
+<a asp-controller="Fragments" asp-action="Create" asp-route-StoryId="@Model.Story.StoryId" asp-route-StoryTitle="@Model.Story.Title" asp-route-EntryId="@entry.EntryId">Write now!</a>
+    }
+    else
+    {
+        <span>There is no active entry for this fiction.</span>
+    }
+}
+<br />
+<a asp-action="Read" asp-controller="Home">Back to List</a>

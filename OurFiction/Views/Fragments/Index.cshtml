@@ -1,0 +1,75 @@
+﻿@model IEnumerable<OurFiction.Models.StoryFragment>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@{
+    ViewData["Title"] = "Write";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+</p>
+Active Stories:
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Story
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Entry
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ViewData["DisplayList"] as List<OurFiction.Controllers.FragmentsController.FragmentViewModel>)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StoryTitle)
+                    &nbsp;<a asp-controller="Home" asp-action="ReadFiction" asp-route-id="@item.StoryId">Read</a>
+                </td>
+                <td>
+                    @if (item.IsActive)
+                    {
+                        <text>Active: </text>
+                        if (!(ViewData["FragList"] as List<StoryFragment>).Any())
+                        {
+                            <a asp-action="Create" asp-route-StoryId="@item.StoryId" asp-route-StoryTitle="@item.StoryTitle" asp-route-EntryId="@item.EntryId">Write Now!</a>
+                        }
+                        else
+                        {
+                        @foreach (var frag in ViewData["FragList"] as List<StoryFragment>)
+                        {
+                            if (frag.Entry.EntryId == item.EntryId)
+                            {
+                                if (frag.Owner.UserName == User.Identity.Name)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@frag.FragmentId">Edit</a>
+                                    <span> | </span>
+                                    <a asp-action="Delete" asp-route-id="@frag.FragmentId">Delete</a>
+                                }
+                            }
+
+                        }
+                        }
+                    }
+                </td>
+                <td>
+                    @foreach(var frag in ViewData["FragList"] as List<StoryFragment>)
+                    {
+                        if(frag.Entry.EntryId == item.EntryId && frag.Owner.UserName == User.Identity.Name)
+                        {
+                            <p>@frag.Content</p>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

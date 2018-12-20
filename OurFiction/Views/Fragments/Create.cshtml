@@ -1,0 +1,37 @@
+﻿@model OurFiction.Models.StoryFragment
+
+@{
+    ViewData["Title"] = "Fragment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["StoryTitle"]</h1>
+
+<h4>Create A Fragment</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" asp-route-EntryId="@ViewData["EntryId"]" asp-route-StoryId="@ViewData["StoryId"]">
+            <label>Story: @ViewData["StoryTitle"]</label>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Content" class="control-label"></label>
+                <textarea asp-for="Content" class="form-control textarea-more-width" rows="5"></textarea>
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Home" asp-action="ReadFiction" asp-route-id="@ViewData["StoryId"]">Back to Fiction</a>
+    <br />
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

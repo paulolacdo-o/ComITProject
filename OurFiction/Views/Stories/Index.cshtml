@@ -1,0 +1,60 @@
+﻿@model IEnumerable<OurFiction.Models.Story>
+
+@{
+    ViewData["Title"] = "Manage Stories";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                Owner
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FragCount)
+            </th>
+            <th colspan="2"></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @item.Owner.UserName
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FragCount)
+            </td>
+            <td>
+                @if (item.IsActive)
+                {
+                    <a asp-action="ActivateDeactivate" asp-route-id="@item.StoryId">Deactivate</a> <text>|</text> 
+                    <a asp-controller="Entries" asp-action="Index" asp-route-id="@item.StoryId">Manage Entries</a>
+                }
+                else
+                {
+                    <a asp-action="ActivateDeactivate" asp-route-id="@item.StoryId">Activate</a>
+                }
+
+                </td>
+                <td>
+                <a asp-action="Edit" asp-route-id="@item.StoryId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.StoryId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.StoryId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

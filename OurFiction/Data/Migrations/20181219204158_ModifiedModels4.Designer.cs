@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OurFiction.Data;
 
 namespace OurFiction.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181219204158_ModifiedModels4")]
+    partial class ModifiedModels4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -268,32 +270,17 @@ namespace OurFiction.Data.Migrations
 
                     b.Property<int>("VotePoints");
 
+                    b.Property<string>("VoterId");
+
                     b.HasKey("VoteId");
 
                     b.HasIndex("EntryId");
 
                     b.HasIndex("FragmentId");
 
-                    b.ToTable("Votes");
-                });
-
-            modelBuilder.Entity("OurFiction.Models.VoteTracker", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("VoteId");
-
-                    b.Property<string>("VoterId");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("VoteId");
-
                     b.HasIndex("VoterId");
 
-                    b.ToTable("Tracker");
+                    b.ToTable("Votes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -379,13 +366,6 @@ namespace OurFiction.Data.Migrations
                     b.HasOne("OurFiction.Models.StoryFragment", "Fragment")
                         .WithMany()
                         .HasForeignKey("FragmentId");
-                });
-
-            modelBuilder.Entity("OurFiction.Models.VoteTracker", b =>
-                {
-                    b.HasOne("OurFiction.Models.Vote", "Vote")
-                        .WithMany()
-                        .HasForeignKey("VoteId");
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Voter")
                         .WithMany()
